@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kali Linux Tools Hub</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050505; color: #e5e7eb; font-family: monospace; }
+        .glow { text-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+    </style>
+</head>
+<footer class="text-center text-gray-500 text-sm py-6 mt-10 border-t border-gray-800">
+    <p>© 2026 Akshan | Kali Linux Tools Hub</p>
+    <p class="mt-1">For learning and authorized security testing only.</p>
+</footer>
+<body class="p-6">
+
+    <!-- Header -->
+    <div class="max-w-6xl mx-auto text-center mb-10">
+><img
+    src="WhatsApp Image 2026-10-31 at 6.24.53 PM.jpeg"
+    alt="My photo"
+    class="w-32 h-32 mx-auto mb-4 rounded-full object-cover border-2 border-green-500"
+>
+        <h1 class="text-4xl font-bold text-green-500 glow">kali@akshan_sha:$</h1>
+        <p class="text-gray-400 mt-2">Explore Kali Linux tools, commands, and categories.</p>
+    </div>
+<div class="max-w-3xl mx-auto mb-8 text-center">
+    <h2 class="text-2xl font-bold text-green-400">About Me</h2>
+    <p class="text-gray-300 mt-2">
+        Hi, I'm Akshan. I'm learning cybersecurity and exploring Kali Linux tools.
+    </p>
+    <button
+    type="button"
+    onclick="clearFilters()"
+    class="bg-gray-900 text-gray-300 border border-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-800">
+    Clear Filters
+</button>
+</div>
+    <!-- Search & Filters -->
+    <div class="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
+        <input type="text" id="searchInput" placeholder="Search tool (e.g. Nmap, Wireshark)..." 
+            class="w-full md:w-1/3 bg-gray-900 border border-gray-800 rounded px-4 py-2 text-green-400 focus:outline-none focus:border-green-500">
+        
+        <button onclick="filterCategory('Wireless Attacks')" class="bg-gray-900 text-gray-300 border border-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-800">Wireless</button>
+<button onclick="filterCategory('Forensics')" class="bg-gray-900 text-gray-300 border border-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-800">Forensics</button>
+        </div>
+    </div>
+
+    <!-- Tools Grid -->
+    <div id="toolsGrid" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cards will be injected by JavaScript -->
+    </div>
+
+    <!-- JavaScript for Dynamic Functionality -->
+    <script>
+        const tools = [
+            { id: 1, name: "Nmap", category: "Information Gathering", desc: "Network mapper used for network discovery and security auditing.", cmd: "sudo apt install nmap" },
+            { id: 2, name: "Wireshark", category: "Sniffing & Spoofing", desc: "The world's foremost and widely-used network protocol analyzer.", cmd: "sudo apt install wireshark" },
+            { id: 3, name: "Burp Suite", category: "Web Applications", desc: "An integrated platform for performing security testing of web applications.", cmd: "sudo apt install burpsuite" },
+            { id: 4, name: "John the Ripper", category: "Password Attacks", desc: "Fast password cracker, aiding in password strength testing.", cmd: "sudo apt install john" },
+            { id: 5, name: "Sqlmap", category: "Web Applications", desc: "Automates detecting and exploiting SQL injection flaws.", cmd: "sudo apt install sqlmap" },
+            { id: 6, name: "Hydra", category: "Password Attacks", desc: "A parallel login cracker which supports numerous protocols.", cmd: "sudo apt install hydra" }
+        ];
+
+        function displayTools(items) {
+            const grid = document.getElementById('toolsGrid');
+            grid.innerHTML = '';
+            
+            if(items.length === 0) {
+                grid.innerHTML = `<p class="text-gray-500 col-span-3 text-center">No tools found.</p>`;
+                return;
+            }
+
+            items.forEach(tool => {
+                grid.innerHTML += `
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 hover:border-green-500 transition-all flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs bg-green-950 text-green-400 border border-green-900 px-2 py-1 rounded">${tool.category}</span>
+                            <h3 class="text-xl font-bold text-white mt-3">${tool.name}</h3>
+                            <p class="text-gray-400 text-sm mt-2">${tool.desc}</p>
+                        </div>
+                        <a
+    href="https://www.google.com/search?q=${encodeURIComponent(tool.name + ' Kali Linux tool')}"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="inline-block mt-3 text-green-400 hover:text-green-300 underline text-sm">
+    Learn more
+</a>
+                        <div class="mt-4 bg-black border border-gray-800 p-3 rounded flex justify-between items-center text-xs text-green-400">
+                            <code>${tool.cmd}</code>
+                            <button onclick="navigator.clipboard.writeText('${tool.cmd}'); alert('Copied: ${tool.cmd}');" 
+                                class="bg-gray-800 hover:bg-gray-700 text-white px-2 py-1 rounded">Copy</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+                // Search and category filters
+        let activeCategory = "All";
+
+        function refreshTools() {
+            const query = document
+                .getElementById("searchInput")
+                .value
+                .trim()
+                .toLowerCase();
+
+            const filtered = tools.filter(tool => {
+                const matchesCategory =
+                    activeCategory === "All" ||
+                    tool.category === activeCategory;
+
+                const searchableText =
+                    `${tool.name} ${tool.category} ${tool.desc}`.toLowerCase();
+
+                return matchesCategory &&
+                    (!query || searchableText.includes(query));
+            });
+
+            displayTools(filtered);
+        }
+
+        document
+            .getElementById("searchInput")
+            .addEventListener("input", refreshTools);
+
+        function filterCategory(category) {
+            activeCategory = category;
+            refreshTools();
+        }
+
+        // Category Filter Functionality
+        function filterCategory(cat) {
+            if(cat === 'All') {
+                tools.liveFilter = null;
+                displayTools(tools);
+            } else {
+                tools.liveFilter = tools.filter(t => t.category === cat);
+                displayTools(tools.liveFilter);
+            }
+        }
+function clearFilters() {
+    document.getElementById("searchInput").value = "";
+    filterCategory("All");
+}
+        // Initial Load
+        displayTools(tools);
+    </script>
+</body>
+</html>
